@@ -1,0 +1,17 @@
+{
+  "name": "js-interview-playground",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Dependency-free JavaScript interview practice playground for the browser and Node.js",
+  "type": "module",
+  "exports": "./shared/index.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start:node": "node backend/cli/main.js",
+    "start:web": "node backend/server/main.js",
+    "test": "node --test tests/unit/*.test.js tests/integration/*.test.js",
+    "test:report": "node scripts/generate-test-report.js"
+  }
+}

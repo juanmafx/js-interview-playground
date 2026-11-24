@@ -1,0 +1,158 @@
+{
+  "generatedAt": "2026-11-24T01:50:18.436Z",
+  "nodeVersion": "v24.22.0",
+  "platform": "linux-x64",
+  "totals": {
+    "total": 29,
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "file": "tests/integration/cli.test.js",
+      "name": "CLI prints the original practice output",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/schema.test.js",
+      "name": "schema applies twice and stores a valid run",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/schema.test.js",
+      "name": "schema cascades deletes from runs to results",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/schema.test.js",
+      "name": "schema rejects invalid rows",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "blocks path traversal and hidden files",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "does not follow symlinks out of a mount",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "does not serve disallowed file types or missing files",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "HEAD returns headers without a body",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "page has no inline script, style, or event handler",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "rejects malformed paths",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "rejects unsupported methods",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "serves every module the page needs",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "serves the page with hardening headers",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "evenSquares rejects invalid input",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "evenSquares squares only even values in order",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "twoSum does not mutate its input",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "twoSum handles duplicates without reusing one element",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "twoSum handles negative numbers and zero",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "twoSum rejects invalid input",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "twoSum returns an empty array when no pair exists",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "twoSum returns the indexes of the first matching pair",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "withRole returns a copy and leaves the original intact",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/config.test.js",
+      "name": "loadConfig defaults to loopback on port 5500",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/config.test.js",
+      "name": "loadConfig reads HOST and PORT",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/config.test.js",
+      "name": "loadConfig rejects invalid ports",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/frontend.test.js",
+      "name": "bindPlayground does nothing until the button is clicked",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/frontend.test.js",
+      "name": "buildInterviewReport preserves the original report text",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/frontend.test.js",
+      "name": "clicking writes the report to the console and the page",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/frontend.test.js",
+      "name": "report content is rendered as text rather than markup",
+      "status": "passed"
+    }
+  ]
+}
