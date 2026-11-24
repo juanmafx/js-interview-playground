@@ -1,7 +1,7 @@
+import { assertFiniteNumbers } from "./assert-finite-numbers.js";
+
 export function twoSum(numbers, target) {
-  if (!Array.isArray(numbers) || !numbers.every(Number.isFinite)) {
-    throw new TypeError("numbers must be an array of finite numbers");
-  }
+  assertFiniteNumbers(numbers);
   if (!Number.isFinite(target)) {
     throw new TypeError("target must be a finite number");
   }

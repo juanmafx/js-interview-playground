@@ -22,7 +22,10 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ### Security
 
-- The web server no longer exposes the repository or binds to all interfaces
+- By default, the web server binds to loopback and no longer exposes the repository
+- The web server rejects untrusted `Host` headers to block DNS rebinding
+- Symlink targets must pass the same hidden-file and file-type rules as requested paths
+- Input validation rejects sparse arrays, and the optional schema rejects malformed timestamps
 
 ## [1.0.0] - 2026-03-09
 

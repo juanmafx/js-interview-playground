@@ -2,6 +2,7 @@ import { readFile, realpath } from "node:fs/promises";
 import { createServer } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { LOOPBACK_HOSTNAMES } from "./config.js";
 import { SECURITY_HEADERS } from "./security-headers.js";
 
 const PROJECT_ROOT = fileURLToPath(new URL("../../", import.meta.url));
@@ -17,7 +18,13 @@ const CONTENT_TYPES = new Map([
   [".js", "text/javascript; charset=utf-8"],
 ]);
 
-const NOT_FOUND_CODES = new Set(["EISDIR", "ENOENT", "ENOTDIR"]);
+const NOT_FOUND_CODES = new Set(["EISDIR", "ELOOP", "ENAMETOOLONG", "ENOENT", "ENOTDIR"]);
+const HOST_HEADER_PATTERN = /^(\[[^\]]+\]|[^:]+)(?::\d{1,5})?$/;
+
+function isAllowedHost(hostHeader, allowedHosts) {
+  const match = HOST_HEADER_PATTERN.exec(hostHeader ?? "");
+  return match !== null && allowedHosts.includes(match[1].toLowerCase());
+}
 
 function parsePathname(rawUrl) {
   const rawPath = rawUrl.split(/[?#]/, 1)[0];
@@ -32,9 +39,13 @@ function parsePathname(rawUrl) {
   }
 }
 
-function isInside(directory, candidate) {
+function isServable(directory, candidate) {
   const relative = path.relative(directory, candidate);
-  return relative !== "" && !relative.startsWith("..") && !path.isAbsolute(relative);
+  if (relative === "" || path.isAbsolute(relative)) {
+    return false;
+  }
+  const isHidden = relative.split(path.sep).some((segment) => segment.startsWith("."));
+  return !isHidden && CONTENT_TYPES.has(path.extname(candidate));
 }
 
 async function resolveFile(pathname, mounts) {
@@ -55,7 +66,7 @@ async function resolveFile(pathname, mounts) {
 
   const root = await realpath(mount.directory);
   const resolved = await realpath(path.join(root, requested.slice(mount.prefix.length)));
-  return isInside(root, resolved) ? resolved : null;
+  return isServable(root, resolved) ? resolved : null;
 }
 
 function respond(response, status, body, headers = {}) {
@@ -68,7 +79,12 @@ function respond(response, status, body, headers = {}) {
   response.end(response.req.method === "HEAD" ? undefined : body);
 }
 
-async function handleRequest(request, response, mounts) {
+async function handleRequest(request, response, mounts, allowedHosts) {
+  if (!isAllowedHost(request.headers.host, allowedHosts)) {
+    respond(response, 421, "Misdirected Request");
+    return;
+  }
+
   if (request.method !== "GET" && request.method !== "HEAD") {
     respond(response, 405, "Method Not Allowed", { Allow: "GET, HEAD" });
     return;
@@ -97,8 +113,8 @@ async function handleRequest(request, response, mounts) {
   }
 }
 
-export function createStaticServer({ mounts = DEFAULT_MOUNTS } = {}) {
+export function createStaticServer({ mounts = DEFAULT_MOUNTS, allowedHosts = LOOPBACK_HOSTNAMES } = {}) {
   return createServer((request, response) => {
-    void handleRequest(request, response, mounts);
+    void handleRequest(request, response, mounts, allowedHosts);
   });
 }

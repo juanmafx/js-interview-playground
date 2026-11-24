@@ -2,13 +2,17 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { evenSquares, twoSum, withRole } from "../../shared/index.js";
 
-test("twoSum returns the indexes of the first matching pair", () => {
+test("twoSum returns the indexes of a matching pair", () => {
   assert.deepEqual(twoSum([2, 7, 11, 15], 9), [0, 1]);
 });
 
 test("twoSum handles duplicates without reusing one element", () => {
   assert.deepEqual(twoSum([3, 3], 6), [0, 1]);
   assert.deepEqual(twoSum([3, 4], 6), []);
+});
+
+test("twoSum returns the earliest completed pair with the latest duplicate", () => {
+  assert.deepEqual(twoSum([3, 1, 3, 2], 5), [2, 3]);
 });
 
 test("twoSum handles negative numbers and zero", () => {
@@ -31,6 +35,7 @@ test("twoSum rejects invalid input", () => {
   assert.throws(() => twoSum([1, "2"], 3), TypeError);
   assert.throws(() => twoSum([1, Number.NaN], 3), TypeError);
   assert.throws(() => twoSum([1, 2], Number.POSITIVE_INFINITY), TypeError);
+  assert.throws(() => twoSum(new Array(2), 3), TypeError);
 });
 
 test("evenSquares squares only even values in order", () => {
@@ -42,6 +47,7 @@ test("evenSquares squares only even values in order", () => {
 test("evenSquares rejects invalid input", () => {
   assert.throws(() => evenSquares(null), TypeError);
   assert.throws(() => evenSquares([2, "4"]), TypeError);
+  assert.throws(() => evenSquares(new Array(2)), TypeError);
 });
 
 test("withRole returns a copy and leaves the original intact", () => {

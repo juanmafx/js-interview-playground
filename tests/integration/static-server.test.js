@@ -12,9 +12,9 @@ let sandbox;
 let sandboxServer;
 let sandboxPort;
 
-function send(targetPort, requestPath, method = "GET") {
+function send(targetPort, requestPath, method = "GET", headers = {}) {
   return new Promise((resolve, reject) => {
-    const outgoing = request({ host: "127.0.0.1", port: targetPort, path: requestPath, method }, (response) => {
+    const outgoing = request({ host: "127.0.0.1", port: targetPort, path: requestPath, method, headers }, (response) => {
       const chunks = [];
       response.on("data", (chunk) => chunks.push(chunk));
       response.on("end", () =>
@@ -49,6 +49,11 @@ before(async () => {
   await mkdir(publicDirectory);
   await writeFile(path.join(sandbox, "private.js"), "private");
   await symlink(path.join(sandbox, "private.js"), path.join(publicDirectory, "escape.js"));
+  await writeFile(path.join(publicDirectory, ".hidden.js"), "private");
+  await writeFile(path.join(publicDirectory, "notes.txt"), "private");
+  await symlink(path.join(publicDirectory, ".hidden.js"), path.join(publicDirectory, "hidden-alias.js"));
+  await symlink(path.join(publicDirectory, "notes.txt"), path.join(publicDirectory, "text-alias.js"));
+  await symlink(path.join(publicDirectory, "loop.js"), path.join(publicDirectory, "loop.js"));
   sandboxServer = createStaticServer({ mounts: [{ prefix: "/", directory: publicDirectory }] });
   sandboxPort = await listen(sandboxServer);
 });
@@ -80,6 +85,7 @@ test("serves every module the page needs", async () => {
     "/scripts/main.js",
     "/scripts/playground.js",
     "/shared/reports/interview-report.js",
+    "/shared/algorithms/assert-finite-numbers.js",
     "/shared/algorithms/even-squares.js",
     "/shared/objects/with-role.js",
   ]) {
@@ -137,4 +143,43 @@ test("does not follow symlinks out of a mount", async () => {
   const response = await send(sandboxPort, "/escape.js");
   assert.equal(response.status, 404);
   assert.doesNotMatch(response.body, /private/);
+});
+
+test("does not serve hidden or disallowed files through symlinks", async () => {
+  for (const attempt of ["/hidden-alias.js", "/text-alias.js"]) {
+    const response = await send(sandboxPort, attempt);
+    assert.equal(response.status, 404, attempt);
+    assert.doesNotMatch(response.body, /private/, attempt);
+  }
+});
+
+test("treats symlink loops and overlong names as not found", async () => {
+  assert.equal((await send(sandboxPort, "/loop.js")).status, 404);
+  assert.equal((await send(port, `/${"a".repeat(5000)}.js`)).status, 404);
+});
+
+test("rejects untrusted Host headers", async () => {
+  for (const Host of ["evil.example", `evil.example:${port}`, "127.0.0.1.evil.example", "localhost:port", "[::2]"]) {
+    const response = await send(port, "/", "GET", { Host });
+    assert.equal(response.status, 421, Host);
+    assert.doesNotMatch(response.body, /Interview Playground/, Host);
+  }
+});
+
+test("accepts loopback Host headers", async () => {
+  for (const Host of [`127.0.0.1:${port}`, `localhost:${port}`, `LOCALHOST:${port}`, `[::1]:${port}`, "localhost"]) {
+    const response = await send(port, "/", "GET", { Host });
+    assert.equal(response.status, 200, Host);
+  }
+});
+
+test("accepts a configured Host and rejects it otherwise", async () => {
+  const custom = createStaticServer({ allowedHosts: ["playground.test"] });
+  const customPort = await listen(custom);
+  try {
+    assert.equal((await send(customPort, "/", "GET", { Host: "playground.test" })).status, 200);
+    assert.equal((await send(customPort, "/", "GET", { Host: "localhost" })).status, 421);
+  } finally {
+    await close(custom);
+  }
 });

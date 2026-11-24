@@ -12,8 +12,8 @@ Interview practice works best when an exercise can be run immediately and its be
 
 | Exercise | Function | Behavior |
 | --- | --- | --- |
-| Two Sum | `twoSum(numbers, target)` | Returns the indexes of the first matching pair in O(n) time using a hash map, or `[]` when no pair exists |
-| Even squares | `evenSquares(numbers)` | Keeps even values and squares them, preserving order |
+| Two Sum | `twoSum(numbers, target)` | Scans left to right in expected O(n) time using a hash map and returns the first pair to complete, matched with the latest earlier duplicate, or `[]` when no pair exists |
+| Even squares | `evenSquares(numbers)` | Keeps even values and squares them, preserving order. Results follow IEEE 754, so very large values can overflow to `Infinity` |
 | Immutable update | `withRole(person, role)` | Returns a shallow copy with a new role and leaves the original untouched |
 
 - The **browser page** runs the even-squares and immutable-update examples when you click **Run Browser JS**, then writes the result to the page and the console.
@@ -70,10 +70,10 @@ The web server reads two optional environment variables.
 
 | Variable | Default | Description |
 | --- | --- | --- |
-| `HOST` | `127.0.0.1` | Bind address |
+| `HOST` | `127.0.0.1` | Bind address. Also accepted as a `Host` header value, unless it is a wildcard address |
 | `PORT` | `5500` | Bind port, from 0 to 65535 |
 
-The server is a local development tool. It has no TLS or authentication, so keep it on a loopback address.
+The server is a local development tool. It has no TLS or authentication, so keep it on a loopback address. Requests whose `Host` header is not a loopback name or the configured `HOST` receive `421 Misdirected Request`, which blocks DNS rebinding.
 
 ## Database (Optional)
 
@@ -83,7 +83,7 @@ The application **does not use a database** and never reads or writes one. [db/s
 sqlite3 practice.sqlite < db/schema.sql
 ```
 
-SQLite enforces foreign keys per connection, so run `PRAGMA foreign_keys = ON;` in each session that writes to it.
+The schema requires SQLite 3.38 or newer for `STRICT` tables and built-in JSON functions, and was tested with 3.46.1. Timestamps must be valid UTC values in the form `YYYY-MM-DDTHH:MM:SSZ`. SQLite enforces foreign keys per connection, so run `PRAGMA foreign_keys = ON;` in each session that writes to it.
 
 ## Testing
 
@@ -98,9 +98,11 @@ npm run test:report
 
 - No runtime or development dependencies
 - Local server binds to loopback by default and serves only allowlisted file types from `frontend/` and `shared/`
-- Path traversal, hidden files, and symlink escapes are blocked
+- Path traversal, hidden files, and symlink escapes are blocked, and symlink targets must pass the same file rules
+- Untrusted `Host` headers are rejected to block DNS rebinding
 - Strict Content Security Policy with no inline script or style
 - Output is rendered with `textContent`
+- There is no login, contact form, or stored personal data, so authentication, 2FA, and password hashing do not apply
 
 See [SECURITY.md](SECURITY.md) and [docs/SECURITY_AUDIT.md](docs/SECURITY_AUDIT.md).
 

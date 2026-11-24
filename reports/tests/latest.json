@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-24T01:50:18.436Z",
+  "generatedAt": "2026-11-24T02:51:54.254Z",
   "nodeVersion": "v24.22.0",
   "platform": "linux-x64",
   "totals": {
-    "total": 29,
-    "passed": 29,
+    "total": 37,
+    "passed": 37,
     "failed": 0,
     "skipped": 0
   },
@@ -31,6 +31,16 @@
     },
     {
       "file": "tests/integration/static-server.test.js",
+      "name": "accepts a configured Host and rejects it otherwise",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "accepts loopback Host headers",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
       "name": "blocks path traversal and hidden files",
       "status": "passed"
     },
@@ -42,6 +52,11 @@
     {
       "file": "tests/integration/static-server.test.js",
       "name": "does not serve disallowed file types or missing files",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "does not serve hidden or disallowed files through symlinks",
       "status": "passed"
     },
     {
@@ -66,12 +81,22 @@
     },
     {
       "file": "tests/integration/static-server.test.js",
+      "name": "rejects untrusted Host headers",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
       "name": "serves every module the page needs",
       "status": "passed"
     },
     {
       "file": "tests/integration/static-server.test.js",
       "name": "serves the page with hardening headers",
+      "status": "passed"
+    },
+    {
+      "file": "tests/integration/static-server.test.js",
+      "name": "treats symlink loops and overlong names as not found",
       "status": "passed"
     },
     {
@@ -111,12 +136,27 @@
     },
     {
       "file": "tests/unit/algorithms.test.js",
-      "name": "twoSum returns the indexes of the first matching pair",
+      "name": "twoSum returns the earliest completed pair with the latest duplicate",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/algorithms.test.js",
+      "name": "twoSum returns the indexes of a matching pair",
       "status": "passed"
     },
     {
       "file": "tests/unit/algorithms.test.js",
       "name": "withRole returns a copy and leaves the original intact",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/config.test.js",
+      "name": "allowedHostnames does not trust wildcard bind addresses",
+      "status": "passed"
+    },
+    {
+      "file": "tests/unit/config.test.js",
+      "name": "allowedHostnames keeps loopback names and adds a specific host",
       "status": "passed"
     },
     {

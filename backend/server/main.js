@@ -1,8 +1,8 @@
-import { loadConfig } from "./config.js";
+import { allowedHostnames, loadConfig } from "./config.js";
 import { createStaticServer } from "./static-server.js";
 
 const { host, port } = loadConfig();
-const server = createStaticServer();
+const server = createStaticServer({ allowedHosts: allowedHostnames(host) });
 
 server.listen(port, host, () => {
   const { port: boundPort } = server.address();

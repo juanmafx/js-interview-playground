@@ -52,7 +52,7 @@ backend/server ────────────> serves frontend/ and shared
 2. The page loads `/scripts/main.js` as an ES module, which imports report logic from `/shared/`.
 3. A click builds the report and writes it to the console and to the output element through `textContent`.
 
-The server maps `/shared/` to `shared/` and every other path to `frontend/`. The rest of the repository is not reachable.
+The server first rejects requests with an untrusted `Host` header. It then maps `/shared/` to `shared/` and every other path to `frontend/`. Resolved files must stay inside their mount and pass the hidden-file and file-type rules, so the rest of the repository is not reachable.
 
 ## Design Decisions
 

@@ -4,8 +4,11 @@ CREATE TABLE IF NOT EXISTS practice_runs (
   id INTEGER PRIMARY KEY,
   runtime TEXT NOT NULL CHECK (runtime IN ('browser', 'node')),
   runtime_version TEXT NOT NULL CHECK (length(runtime_version) BETWEEN 1 AND 64),
-  started_at TEXT NOT NULL CHECK (started_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T*Z'),
-  finished_at TEXT CHECK (finished_at IS NULL OR finished_at >= started_at)
+  started_at TEXT NOT NULL CHECK (started_at IS strftime('%Y-%m-%dT%H:%M:%SZ', started_at)),
+  finished_at TEXT CHECK (
+    finished_at IS NULL
+    OR (finished_at IS strftime('%Y-%m-%dT%H:%M:%SZ', finished_at) AND finished_at >= started_at)
+  )
 ) STRICT;
 
 CREATE TABLE IF NOT EXISTS exercise_results (

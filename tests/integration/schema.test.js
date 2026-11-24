@@ -38,7 +38,10 @@ test("schema rejects invalid rows", { skip }, () => {
   const invalidStatements = [
     "INSERT INTO practice_runs (runtime, runtime_version, started_at) VALUES ('deno', 'v2', '2026-01-01T00:00:00Z');",
     "INSERT INTO practice_runs (runtime, runtime_version, started_at) VALUES ('node', 'v24', 'yesterday');",
+    "INSERT INTO practice_runs (runtime, runtime_version, started_at) VALUES ('node', 'v24', '2026-99-99TjunkZ');",
+    "INSERT INTO practice_runs (runtime, runtime_version, started_at) VALUES ('node', 'v24', '2026-02-31T00:00:00Z');",
     `${VALID_RUN} UPDATE practice_runs SET finished_at = '2025-01-01T00:00:00Z';`,
+    `${VALID_RUN} UPDATE practice_runs SET finished_at = 'zzz';`,
     "INSERT INTO exercise_results (run_id, exercise_name, status, input_json) VALUES (99, 'two_sum', 'passed', '{}');",
     `${VALID_RUN} INSERT INTO exercise_results (run_id, exercise_name, status, input_json) VALUES (1, 'two_sum', 'passed', 'not-json');`,
     `${VALID_RUN} INSERT INTO exercise_results (run_id, exercise_name, status, input_json) VALUES (1, 'two_sum', 'passed', '{}'), (1, 'two_sum', 'failed', '{}');`,
